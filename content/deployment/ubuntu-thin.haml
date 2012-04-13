@@ -1,1 +1,37 @@
-%h1 RVM for the win!
+%h1 This is a guide to setup an ubuntu server with thin and rails, using RVM.
+
+%p This does not explains how to setup nginx.
+
+%p If you are using RVM, Rails and Ubuntu, and having trouble with init.d deamon: this is for you
+
+%p
+  First of all, RVM is awesome. You only need to do a few tricks to set it up.
+  Install RVM, and the gems you need. Then, install rubygems-bundler to skip writing "bundle exec" infinit times.
+  Create the deamon with:
+
+%code
+  sudo /usr/sbin/update-rc.d -f thin defaults
+
+%p
+  Now you only need to create a RVM WRAPPER to tell the deamon to use "bundle exec"
+
+%code
+  rvm wrapper <rubyversion>@<gemset> bootup thin
+
+%p
+  and change the original loader
+
+%code
+  DAEMON=/usr/local/rvm/gems/ruby-<rubyversion>-<rubyrevision>@<gemset>/bin/thin
+
+%p
+  to point to the rvm wrapper instead
+
+%code
+  DAEMON=/usr/local/bin/bootup_thin
+
+%p then, start it up
+
+%code sudo service thin start
+
+%p thanks to Ola Tuvesson @ stackoverflow.com and mpapis @ #rvm@freenode
